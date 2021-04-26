@@ -5,7 +5,7 @@ import { Actions } from "react-native-router-flux";
 export default async function submit(email, password, dispatch) {
   console.log("im in yes");
 
-  const loginUser = { email, password };
+  const loginUser = { email: email.toLowerCase().trim(), password };
 
   const setUser = (payload) => ({ type: "LOGIN_USER", payload });
 
@@ -17,19 +17,13 @@ export default async function submit(email, password, dispatch) {
       },
     };
 
-    //faldayblusablanca
-
     const loginRes = await axios.post(
       "http://192.168.1.29:3001/userapps/login",
       loginUser,
       config
     );
 
-    // setUserData({
-    //   token: loginRes.data.token,
-    //   user: loginRes.data.user,
-    // });
-
+    console.log(loginRes.data, "elto");
     if (loginRes.data.token) {
       dispatch(setUser(loginRes.data.token));
       Actions.replace("main", { token: loginRes.data.token });
@@ -37,6 +31,6 @@ export default async function submit(email, password, dispatch) {
       alert("no funcionó");
     }
   } catch (err) {
-    alert(err);
+    alert(err.response.data);
   }
 }

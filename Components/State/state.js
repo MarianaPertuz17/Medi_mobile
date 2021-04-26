@@ -23,7 +23,7 @@ function State(...props) {
   const [systolicPressure, setSystolicPressure] = useState("");
   const [diastolicPressure, setDiastolicPressure] = useState("");
   const [sugarLevel, setSugarLevel] = useState("");
-  const [temperature, setTemperature] = useState("");
+  const [heartFreq, setHeartFreq] = useState("");
   const [oxygenSat, setOxygenSat] = useState("");
   const userInfo = useSelector((state) => state);
   const [userData, setUserData] = useState(null);
@@ -36,7 +36,8 @@ function State(...props) {
   const [conditions, setConditions] = useState();
   const [symptoms, setSymptoms] = useState();
 
-  console.log(userInfo.conditionInfo.condition, "condicion");
+  console.log(userInfo.symptomInfo.condition, "condicion");
+  console.log(userInfo.userInfo.token, "token que sale");
   const getUserInfo = async () => {
     try {
       const config = {
@@ -58,13 +59,19 @@ function State(...props) {
     }
   }, []);
 
+  useEffect(() => {
+    if (userInfo.conditionInfo.condition !== null) {
+      setConditions(userInfo.conditionInfo.condition);
+    }
+  }, [userInfo.conditionInfo.condition]);
+
   const sendState = async () => {
     const updateUser = {
-      temperature,
+      heartFreq,
       sugarLevel,
       systolicPressure,
       diastolicPressure,
-      conditions: userInfo.conditionInfo.condition,
+      conditions: conditions,
       symptoms: userInfo.symptomInfo.condition,
       weight,
       oxygenSat,
@@ -84,6 +91,8 @@ function State(...props) {
         updateUser,
         config
       );
+
+      alert("Se ha actualizado su estado");
     } catch (e) {
       console.log(e);
     }
@@ -94,7 +103,7 @@ function State(...props) {
     systolicPressure,
     diastolicPressure,
     sugarLevel,
-    temperature,
+    heartFreq,
     conditions,
     symptoms,
   ]);
@@ -129,196 +138,6 @@ function State(...props) {
         >
           Ayúdanos a mejorar tu experiencia, actualizando los siguientes datos.
         </Text>
-
-        <TouchableOpacity
-          style={styles.dropDownBox}
-          onPress={() => setClick(!click)}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>PESO</Text>
-            {click ? (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowUp}
-              ></ImageBackground>
-            ) : (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowDown}
-              ></ImageBackground>
-            )}
-          </View>
-          <View>
-            {click ? (
-              <View style={styles.insideDropDown}>
-                <TextInput
-                  id="peso"
-                  name="peso"
-                  autoFocus
-                  style={styles.textInput}
-                  onChangeText={(e) => setWeight(e)}
-                ></TextInput>
-                <Text
-                  style={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 15,
-                    marginLeft: 10,
-                    color: "gray",
-                    marginBottom: 20,
-                    marginTop: 20,
-                  }}
-                >
-                  kg
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.dropDownBox}
-          onPress={() => setClick2(!click2)}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>NIVEL DE AZÚCAR</Text>
-            {click2 ? (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowUp}
-              ></ImageBackground>
-            ) : (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowDown}
-              ></ImageBackground>
-            )}
-          </View>
-
-          <View>
-            {click2 ? (
-              <View style={styles.insideDropDown}>
-                <TextInput
-                  id="sugar"
-                  name="sugar"
-                  autoFocus
-                  style={styles.textInput}
-                  onChangeText={(e) => setSugarLevel(e)}
-                ></TextInput>
-                <Text
-                  style={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 15,
-                    marginLeft: 10,
-                    color: "gray",
-                    marginBottom: 20,
-                    marginTop: 20,
-                  }}
-                >
-                  mg/dl
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.dropDownBox}
-          onPress={() => setClick3(!click3)}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>TEMPERATURA</Text>
-            {click3 ? (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowUp}
-              ></ImageBackground>
-            ) : (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowDown}
-              ></ImageBackground>
-            )}
-          </View>
-
-          <View>
-            {click3 ? (
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <TextInput
-                  id="temperature"
-                  name="temperature"
-                  autoFocus
-                  style={styles.textInput}
-                  onChangeText={(e) => setTemperature(e)}
-                ></TextInput>
-                <Text
-                  style={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 15,
-                    marginLeft: 10,
-                    color: "gray",
-                    marginBottom: 20,
-                    marginTop: 20,
-                  }}
-                >
-                  °C
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.dropDownBox}
-          onPress={() => setClick4(!click4)}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>SATURACIÓN DE OXÍGENO</Text>
-            {click4 ? (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowUp}
-              ></ImageBackground>
-            ) : (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowDown}
-              ></ImageBackground>
-            )}
-          </View>
-
-          <View>
-            {click4 ? (
-              <View style={styles.insideDropDown}>
-                <TextInput
-                  id="sat"
-                  name="sat"
-                  autoFocus
-                  style={styles.textInput}
-                  onChangeText={(e) => setOxygenSat(e)}
-                ></TextInput>
-
-                <Text
-                  style={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 15,
-                    marginLeft: 10,
-                    color: "gray",
-                    marginBottom: 20,
-                    marginTop: 20,
-                  }}
-                >
-                  mm Hg
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.dropDownBox}
@@ -426,7 +245,10 @@ function State(...props) {
                     justifyContent: "center",
                   }}
                 >
-                  <TouchableOpacity style={styles.myButton2}>
+                  <TouchableOpacity
+                    style={styles.myButton2}
+                    onPress={(e) => setConditions("en reposo")}
+                  >
                     <Text style={styles.textButton2}>En reposo</Text>
                   </TouchableOpacity>
 
@@ -444,6 +266,196 @@ function State(...props) {
                     <CheckBox />
                   </View>
                 ) : null}
+              </View>
+            ) : null}
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.dropDownBox}
+          onPress={() => setClick(!click)}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>PESO</Text>
+            {click ? (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowUp}
+              ></ImageBackground>
+            ) : (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowDown}
+              ></ImageBackground>
+            )}
+          </View>
+          <View>
+            {click ? (
+              <View style={styles.insideDropDown}>
+                <TextInput
+                  id="peso"
+                  name="peso"
+                  autoFocus
+                  style={styles.textInput}
+                  onChangeText={(e) => setWeight(e)}
+                ></TextInput>
+                <Text
+                  style={{
+                    fontFamily: "Roboto_400Regular",
+                    fontSize: 15,
+                    marginLeft: 10,
+                    color: "gray",
+                    marginBottom: 20,
+                    marginTop: 20,
+                  }}
+                >
+                  kg
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.dropDownBox}
+          onPress={() => setClick3(!click3)}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>FRECUENCIA CARDÍACA</Text>
+            {click3 ? (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowUp}
+              ></ImageBackground>
+            ) : (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowDown}
+              ></ImageBackground>
+            )}
+          </View>
+
+          <View>
+            {click3 ? (
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <TextInput
+                  id="heart_freq"
+                  name="heart_freq"
+                  autoFocus
+                  style={styles.textInput}
+                  onChangeText={(e) => setHeartFreq(e)}
+                ></TextInput>
+                <Text
+                  style={{
+                    fontFamily: "Roboto_400Regular",
+                    fontSize: 15,
+                    marginLeft: 10,
+                    color: "gray",
+                    marginBottom: 20,
+                    marginTop: 20,
+                  }}
+                >
+                  lat/min
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.dropDownBox}
+          onPress={() => setClick2(!click2)}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>NIVEL DE AZÚCAR</Text>
+            {click2 ? (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowUp}
+              ></ImageBackground>
+            ) : (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowDown}
+              ></ImageBackground>
+            )}
+          </View>
+
+          <View>
+            {click2 ? (
+              <View style={styles.insideDropDown}>
+                <TextInput
+                  id="sugar"
+                  name="sugar"
+                  autoFocus
+                  style={styles.textInput}
+                  onChangeText={(e) => setSugarLevel(e)}
+                ></TextInput>
+                <Text
+                  style={{
+                    fontFamily: "Roboto_400Regular",
+                    fontSize: 15,
+                    marginLeft: 10,
+                    color: "gray",
+                    marginBottom: 20,
+                    marginTop: 20,
+                  }}
+                >
+                  mg/dl
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.dropDownBox}
+          onPress={() => setClick4(!click4)}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>SATURACIÓN DE OXÍGENO</Text>
+            {click4 ? (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowUp}
+              ></ImageBackground>
+            ) : (
+              <ImageBackground
+                source={require("./down-arrow.png")}
+                style={styles.arrowDown}
+              ></ImageBackground>
+            )}
+          </View>
+
+          <View>
+            {click4 ? (
+              <View style={styles.insideDropDown}>
+                <TextInput
+                  id="sat"
+                  name="sat"
+                  autoFocus
+                  style={styles.textInput}
+                  onChangeText={(e) => setOxygenSat(e)}
+                ></TextInput>
+
+                <Text
+                  style={{
+                    fontFamily: "Roboto_400Regular",
+                    fontSize: 15,
+                    marginLeft: 10,
+                    color: "gray",
+                    marginBottom: 20,
+                    marginTop: 20,
+                  }}
+                >
+                  mm Hg
+                </Text>
               </View>
             ) : null}
           </View>

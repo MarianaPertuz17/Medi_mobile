@@ -6,6 +6,8 @@ import LottieView from "lottie-react-native";
 import UserContext from "./Components/Context/context";
 import Axios from "axios";
 
+const functions = require("firebase-functions");
+
 function App() {
   const [userData, setUserData] = useState({
     token: undefined,

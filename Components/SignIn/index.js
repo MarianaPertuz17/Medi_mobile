@@ -140,12 +140,12 @@ function SignIn(props) {
         </TouchableOpacity>
 
         <Text htmlFor="email" style={styles.register}>
-          ¿No eres miembro?
+          ¿Tu link de verificación expiró?
           <TouchableOpacity
             style={styles.button}
-            onPress={() => Actions.register()}
+            onPress={() => Actions.verifLink()}
           >
-            <Text style={styles.register2}>Registrate Aquí</Text>
+            <Text style={styles.register2}>Click aquí</Text>
           </TouchableOpacity>
         </Text>
       </View>
@@ -213,6 +213,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "#044863",
     alignContent: "flex-end",
+    padding: 0,
+    marginBottom: 0,
   },
 
   register3: {

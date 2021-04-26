@@ -35,7 +35,7 @@ function MyLineChart() {
           "x-auth-token": userToken,
         },
       };
-      const res = await axios.get("http://192.168.1.29:3001/userapps/", config);
+      const res = await axios.get("http://3.14.73.151/userapps/", config);
       setUserData(res.data);
     } catch (err) {
       alert(err);

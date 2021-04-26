@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "medicine-app-react-native",
+    "name": "Medi+",
     "slug": "medicine-app-react-native",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/mediplus.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -14,8 +14,13 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/*"
     ],
+    "android":{
+      "package": "com.proyecto.medicina",
+      "versionCode":1
+    },
+
     "ios": {
       "supportsTablet": true
     },

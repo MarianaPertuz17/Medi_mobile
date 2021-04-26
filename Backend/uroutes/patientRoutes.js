@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const UserApp = require("../models/userAppModel");
+const ClinicHistory = require("../models/clinicHistory");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
@@ -7,57 +8,115 @@ const nodemailer = require("nodemailer");
 const { ObjectID } = require("mongodb");
 
 //REGISTER
-
 router.post("/register", async (req, res) => {
   try {
     let {
-      displayName,
-      docuId,
-      lastName,
       email,
       password,
-      passwordCheck,
-      temperature,
-      sugarLevel,
-      diastolicpressure,
-      systolicPressure,
-      condition,
-      weight,
+      displayName,
+      userName,
+      lastName,
+      sex,
+      bornDate,
+      ocupation,
+      country,
+      city,
+      currentCity,
+      address,
+      phone,
+      pastSurgery,
+      contactName,
+      contactLastName,
+      contactPhone,
+      docuId,
+      minPatientDiastolicPressure,
+      maxPatientDiastolicPressure,
+      minPatientSystolicPressure,
+      maxPatientSystolicPressure,
+      minDiastolicPressure,
+      maxDiastolicPressure,
+      minSystolicPressure,
+      maxSystolicPressure,
     } = req.body;
 
-    //Validation
+    if (email) {
+      const existingUser = await ClinicHistory.findOne({ email: email });
+      if (existingUser)
+        return res.json("Ya existe una cuenta con este correo electrónico");
+    }
+    if (password) {
+      if (password.length < 5)
+        return res.json("La contraseña debe tener más de 5 carácteres.");
+    }
 
-    //encrypting password
+    if (
+      !email ||
+      !password ||
+      !displayName ||
+      !lastName ||
+      !sex ||
+      !bornDate ||
+      !ocupation ||
+      !country ||
+      !currentCity ||
+      !phone
+    )
+      return res.json("Faltan campos por llenar");
+    //Encriptación de contraseña
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
+    //Encriptación de contraseña
+
+    let numero = email.indexOf("@");
+    let emailCortado = email.substr(0, numero);
 
     let currentDate = new Date();
     currentDate.setHours(currentDate.getHours() - 5);
 
-    const newUser = new User({
+    const newUser = new UserApp({
+      displayName: emailCortado,
       lastName,
       docuId,
       email,
       password: passwordHash,
-      displayName,
-      temperature,
-      sugarLevel,
-      pressure,
-      weight,
-      historicWeight: [{ weight: weight, date: currentDate }],
-      historicDiastolicPressure: [
-        { pressure: pressure, date: currentDate, condition: condition },
-      ],
-      historicSystolicPressure: [
-        { pressure: pressure, date: currentDate, condition: condition },
-      ],
-      historicSugarLevel: [{ sugarLevel: sugarLevel, date: currentDate }],
-      historicTemperature: [{ temperature: temperature, date: currentDate }],
+      minPatientDiastolicPressure,
+      maxPatientDiastolicPressure,
+      minPatientSystolicPressure,
+      maxPatientSystolicPressure,
+      minDiastolicPressure,
+      maxDiastolicPressure,
+      minSystolicPressure,
+      maxSystolicPressure,
     });
-    await newUser.save();
+    await newUser.save(); //currently working
 
+    //Creación historia clínica
+    const newClinicHistory = new ClinicHistory({
+      displayName,
+      lastName,
+      sex,
+      bornDate,
+      ocupation,
+      country,
+      city,
+      currentCity,
+      address,
+      phone,
+      pastSurgery,
+      contactName,
+      contactLastName,
+      contactPhone,
+      docuId,
+      email: email,
+    });
+    await newClinicHistory.save();
+
+    //Envío de correo electrónico
     const transporter = nodemailer.createTransport({
       service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: "medicinaparatodos.custom@gmail.com",
         pass: "proyectofinal123",
@@ -76,10 +135,12 @@ router.post("/register", async (req, res) => {
       },
       async (err, token) => {
         res.json({ token });
-        const url = `http://localhost:3001/confirmation/${token}`;
+        const url = `http://ec2-18-218-144-116.us-east-2.compute.amazonaws.com/confirmation/userapps/${token}`;
         const output = `
           <h2>Haz clic en el siguiente link para activar tu cuenta</h2>
-          <p>http://localhost:3001/confirmation/${token}</p>
+          <p>http://ec2-18-218-144-116.us-east-2.compute.amazonaws.com/confirmation/userapps/${token}></p>
+           <p><b>Usuario: </b>${email}</p>
+      <p><b>Contraseña: </b>${password}</p>
           <p><b>NOTA: </b> El link expira en 30 minutos.</p>
           `;
         try {
@@ -94,17 +155,13 @@ router.post("/register", async (req, res) => {
         }
       }
     );
-
-    //Send confirmation email
-
-    // send mail with defined transport object
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 //LOGIN
-
+//LOGIN
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   console.log(email);
@@ -150,8 +207,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-//To check if token is valid-tells if we are logged in
-
 router.post("/tokenIsValid", async (req, res) => {
   try {
     const token = req.header("x-auth-token");
@@ -169,20 +224,17 @@ router.post("/tokenIsValid", async (req, res) => {
   }
 });
 
-router.get("/", auth, async (req, res) => {
-  console.log("jueputa");
-  console.log(req.user);
-  const user = await UserApp.findById(req.user);
+router.get("/stadisticas", async (req, res) => {
+  const patients = await UserApp.find();
   res.json({
-    user,
+    users: patients,
   });
 });
 
-//UPDATE STATE
-
+//UPDATE STATES
 router.post("/updatestate", async (req, res) => {
   const {
-    temperature,
+    heartFreq,
     sugarLevel,
     systolicPressure,
     diastolicPressure,
@@ -195,11 +247,8 @@ router.post("/updatestate", async (req, res) => {
   const user = await UserApp.findById(userID);
 
   let currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + 10);
+  currentDate.setDate(currentDate.getDate());
   currentDate.setHours(currentDate.getHours() - 5);
-  // // currentDate.setDate(currentDate.getDate() - 2);
-
-  //find the year of the current date
   let oneJan = new Date(currentDate.getFullYear(), 0, 1);
 
   // calculating number of days in given year before a given date
@@ -208,13 +257,13 @@ router.post("/updatestate", async (req, res) => {
   // adding 1 since to current date and returns value starting from 0
   let result = Math.ceil((currentDate.getDay() + 1 + numberOfDays) / 7);
 
-  //TEMPERATURE UPDATE
-  if (temperature.trim() !== "") {
+  //HEART FREQUENCY UPDATE
+  if (heartFreq.trim() !== "") {
     await UserApp.update(
       { _id: new ObjectID(userID) },
       {
         $push: {
-          historicTemperature: { temperature: temperature, date: currentDate },
+          historicHeartFreq: { heartFreq: heartFreq, date: currentDate },
         },
       }
     );
@@ -232,63 +281,17 @@ router.post("/updatestate", async (req, res) => {
     );
   }
 
-  //SYSTOLIC PRESSURE UPDATE
-  if (systolicPressure.trim() !== "") {
+  //PRESSURE UPDATE
+  if (systolicPressure.trim() !== "" && diastolicPressure.trim() !== "") {
     await UserApp.update(
       { _id: new ObjectID(userID) },
       {
         $push: {
-          historicSystolicPressure: {
-            pressure: systolicPressure,
-            date: currentDate,
-            condition: conditions,
-          },
-        },
-      }
-    );
-  }
-
-  //DIASTOLIC PRESSURE UPDATE
-  if (diastolicPressure.trim() !== "") {
-    await UserApp.update(
-      { _id: new ObjectID(userID) },
-      {
-        $push: {
-          historicDiastolicPressure: {
-            pressure: diastolicPressure,
-            date: currentDate,
-            condition: conditions,
-          },
-        },
-      }
-    );
-  }
-
-  //CONDITION UPDATE
-  if (conditions !== null) {
-    await UserApp.update(
-      { _id: new ObjectID(userID) },
-      {
-        $push: {
-          conditions: {
+          historicPressure: {
             diastolicPressure: diastolicPressure,
             systolicPressure: systolicPressure,
             date: currentDate,
             condition: conditions,
-          },
-        },
-      }
-    );
-  }
-
-  //SYMPTOMS UPDATE
-  if (symptoms !== null) {
-    await UserApp.update(
-      { _id: new ObjectID(userID) },
-      {
-        $push: {
-          symtoms: {
-            date: currentDate,
             symptoms: symptoms,
           },
         },
@@ -338,6 +341,19 @@ router.post("/updatestate", async (req, res) => {
     );
   }
   res.send({ msg: "hello" });
+});
+
+router.route("/clinica").get((req, res) => {
+  ClinicHistory.find()
+    .then((users) => res.json(users))
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
+router.get("/", auth, async (req, res) => {
+  const user = await UserApp.findById(req.user);
+  res.json({
+    user,
+  });
 });
 
 module.exports = router;

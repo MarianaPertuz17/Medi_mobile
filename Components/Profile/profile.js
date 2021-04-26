@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Actions } from "react-native-router-flux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -10,23 +12,32 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
-import {
-  useFonts,
-  Roboto_100Thin,
-  Roboto_100Thin_Italic,
-  Roboto_300Light,
-  Roboto_300Light_Italic,
-  Roboto_400Regular,
-  Roboto_400Regular_Italic,
-  Roboto_500Medium,
-  Roboto_500Medium_Italic,
-  Roboto_700Bold,
-  Roboto_700Bold_Italic,
-  Roboto_900Black,
-  Roboto_900Black_Italic,
-} from "@expo-google-fonts/roboto";
 
 function Profile() {
+  const userInfo = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  const setLogout = (payload) => ({ type: "LOGIN_USER", payload });
+
+  const logout = async () => {
+    try {
+      const config = {
+        headers: {
+          "content-type": "application/json",
+          "x-auth-token": userInfo.userInfo.token,
+        },
+      };
+      const res = await axios.get("http://3.14.73.151/userapps/", config);
+
+      if (res.data) {
+        dispatch(setLogout(null));
+        Actions.replace("signin");
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text
@@ -77,6 +88,14 @@ function Profile() {
       <TextInput style={styles.textInput} placeholder="Sobrenombre"></TextInput>
 
       <Text style={styles.normalText}>Información de usuario</Text>
+
+      <TouchableOpacity onPress={() => Actions.changePassword()}>
+        <Text style={styles.changePasswordText}>Cambiar Contraseña</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={logout}>
+        <Text style={styles.logoutText}>Cerrar sesión</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -110,6 +129,22 @@ const styles = StyleSheet.create({
   },
 
   normalText: {
+    fontFamily: "Roboto_500Medium",
+    fontSize: 16,
+    marginBottom: 30,
+    marginLeft: 20,
+    color: "#0a4c66",
+  },
+
+  logoutText: {
+    fontFamily: "Roboto_500Medium",
+    fontSize: 16,
+    bottom: 0,
+    marginLeft: 20,
+    color: "gray",
+  },
+
+  changePasswordText: {
     fontFamily: "Roboto_500Medium",
     fontSize: 16,
     marginBottom: 30,

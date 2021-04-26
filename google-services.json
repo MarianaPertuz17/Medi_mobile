@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "252565880685",
+    "firebase_url": "https://proyectofinal-651fd.firebaseio.com",
+    "project_id": "proyectofinal-651fd",
+    "storage_bucket": "proyectofinal-651fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252565880685:android:248b067ea09f18c89fe464",
+        "android_client_info": {
+          "package_name": "com.mediplus.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "252565880685-scp24o5f4pg8tgp35p6kkh3vii3jufkr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlKL9NsrZMcMaS5tDXKSBEyeY4Pep5qIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "252565880685-scp24o5f4pg8tgp35p6kkh3vii3jufkr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
