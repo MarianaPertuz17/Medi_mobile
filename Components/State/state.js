@@ -78,7 +78,6 @@ function State(...props) {
       userID: userData.user._id,
       user: userData.user,
     };
-
     const config = {
       headers: {
         "content-type": "application/json",
@@ -93,8 +92,8 @@ function State(...props) {
       );
 
       alert("Se ha actualizado su estado");
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      alert(err.response.data);
     }
   };
 
@@ -368,99 +367,6 @@ function State(...props) {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.dropDownBox}
-          onPress={() => setClick2(!click2)}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>NIVEL DE AZÚCAR</Text>
-            {click2 ? (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowUp}
-              ></ImageBackground>
-            ) : (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowDown}
-              ></ImageBackground>
-            )}
-          </View>
-
-          <View>
-            {click2 ? (
-              <View style={styles.insideDropDown}>
-                <TextInput
-                  id="sugar"
-                  name="sugar"
-                  autoFocus
-                  style={styles.textInput}
-                  onChangeText={(e) => setSugarLevel(e)}
-                ></TextInput>
-                <Text
-                  style={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 15,
-                    marginLeft: 10,
-                    color: "gray",
-                    marginBottom: 20,
-                    marginTop: 20,
-                  }}
-                >
-                  mg/dl
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.dropDownBox}
-          onPress={() => setClick4(!click4)}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>SATURACIÓN DE OXÍGENO</Text>
-            {click4 ? (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowUp}
-              ></ImageBackground>
-            ) : (
-              <ImageBackground
-                source={require("./down-arrow.png")}
-                style={styles.arrowDown}
-              ></ImageBackground>
-            )}
-          </View>
-
-          <View>
-            {click4 ? (
-              <View style={styles.insideDropDown}>
-                <TextInput
-                  id="sat"
-                  name="sat"
-                  autoFocus
-                  style={styles.textInput}
-                  onChangeText={(e) => setOxygenSat(e)}
-                ></TextInput>
-
-                <Text
-                  style={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 15,
-                    marginLeft: 10,
-                    color: "gray",
-                    marginBottom: 20,
-                    marginTop: 20,
-                  }}
-                >
-                  mm Hg
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        </TouchableOpacity>
-
         <Text style={styles.normalText2}>SÍNTOMAS</Text>
         <Symptoms />
 
@@ -582,7 +488,7 @@ const styles = StyleSheet.create({
 
   myButton: {
     alignSelf: "center",
-    marginTop: 10,
+    marginTop: 40,
     backgroundColor: "lightgray",
     borderRadius: 20,
     width: 140,

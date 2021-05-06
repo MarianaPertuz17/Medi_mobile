@@ -136,7 +136,7 @@ function Stats() {
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
             {...touchProps}
-            onPress={() => Actions.push("pie1")}
+            onPress={() => Actions.push("line3")}
           >
             <Text
               style={{
@@ -165,22 +165,33 @@ function Stats() {
 
           <View style={{ width: 10 }}></View>
 
-          <TouchableOpacity
-            {...touchProps}
-            onPress={() => Actions.push("pie2")}
-          >
+          <View style={styles.boxNormal2}>
             <Text
               style={{
-                color: "#0a4c66",
-                fontSize: 15,
+                color: "gray",
+                fontSize: 12,
                 fontFamily: "Roboto_400Regular",
+                fontWeight: "bold",
                 padding: 10,
                 paddingLeft: 15,
               }}
             >
-              Pie 2
+              En los recuadros grises podrá observar las gráficas de sus
+              registros históricos.
             </Text>
-          </TouchableOpacity>
+            <Text
+              style={{
+                color: "gray",
+                fontSize: 10,
+                fontFamily: "Roboto_400Regular_Italic",
+                padding: 10,
+                paddingLeft: 15,
+                paddingTop: 0,
+              }}
+            >
+              Seleccione el que desea observar
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -220,5 +231,15 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 10,
     backgroundColor: "lightgray",
+  },
+
+  boxNormal2: {
+    borderColor: "#bbd3dd",
+    borderWidth: 1.3,
+    marginTop: 20,
+    marginLeft: 10,
+    width: 185,
+    height: 200,
+    borderRadius: 10,
   },
 });

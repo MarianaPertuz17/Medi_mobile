@@ -20,14 +20,15 @@ import {
 import { useSelector } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-function MyLineChart() {
+function MyLineChart3() {
   const [labels, setLabels] = useState(null);
   const [weight, setWeight] = useState([]);
   const userToken = useSelector((state) => state.userInfo.token);
   const [userData, setUserData] = useState(null);
-  const [currentUserWeightChartData, setCurrentUserWeightChartData] = useState(
-    null
-  );
+  const [
+    currentUserHeartFreqChartData,
+    setCurrentUserHeartFreqChartData,
+  ] = useState(null);
   const [date, setDate] = useState(new Date());
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -45,7 +46,7 @@ function MyLineChart() {
           "x-auth-token": userToken,
         },
       };
-      const res = await axios.get("http://192.168.1.29:3001/userapps/", config);
+      const res = await axios.get("http://3.14.73.151/userapps/", config);
       setUserData(res.data);
     } catch (err) {
       alert(err);
@@ -58,24 +59,21 @@ function MyLineChart() {
   useEffect(() => {
     if (startDate && endDate && userData) {
       // console.log(startDate, "inciio");
-      const length = userData.user.historicWeight.length;
-      const lastMonth = userData.user.historicWeight[length - 1].date.split(
+      const length = userData.user.historicHeartFreq.length;
+      const lastMonth = userData.user.historicHeartFreq[length - 1].date.split(
         "-"
       )[1];
 
-      const labelsWeight = userData.user.historicWeight
-        .map((weightObject, index) => {
-          const completeWeightDateString = weightObject.date;
-
-          // console.log(formattedStartDate, "format");
-          const weight = parseFloat(weightObject.currentAverage);
+      const labelsHeartFreq = userData.user.historicHeartFreq
+        .map((heartFreqObject, index) => {
+          const completeHeartFreqDateString = heartFreqObject.date;
+          const heartFreq = parseFloat(heartFreqObject.heartFreq);
 
           const array = {
-            date: completeWeightDateString,
-            weight: weight,
+            date: completeHeartFreqDateString,
+            heartFreq: heartFreq,
           };
-          // console.log(array, "elarray");
-          // for month graph
+
           return array;
         })
         .filter((e) => {
@@ -86,29 +84,22 @@ function MyLineChart() {
             return true;
           }
         })
-        .map((weightObject, index) => {
+        .map((heartFreqObject, index) => {
           const object =
-            weightObject.date.split("-")[2].split("T")[0] +
+            heartFreqObject.date.split("-")[2].split("T")[0] +
             "/" +
-            weightObject.date.split("-")[1] +
-            "/" +
-            weightObject.date.split("-")[0].split("0")[1];
+            heartFreqObject.date.split("-")[1];
           return object;
         });
 
-      const valuesWeight = userData.user.historicWeight
-        .map((weightObject, index) => {
-          const completeWeightDateString = weightObject.date;
-          const formattedWeightDateString = completeWeightDateString.substring(
-            0,
-            completeWeightDateString.indexOf("T")
-          );
-
-          const weight = parseFloat(weightObject.currentAverage);
+      const valuesHeartFreq = userData.user.historicHeartFreq
+        .map((heartFreqObject, index) => {
+          const completeHeartFreqDateString = heartFreqObject.date;
+          const heartFreq = parseFloat(heartFreqObject.heartFreq);
 
           const array = {
-            date: completeWeightDateString,
-            weight: weight,
+            date: completeHeartFreqDateString,
+            heartFreq: heartFreq,
           };
 
           // for month graph
@@ -122,13 +113,13 @@ function MyLineChart() {
             return true;
           }
         })
-        .map((weightObject, index) => {
-          return weightObject.weight;
+        .map((heartFreqObject, index) => {
+          return heartFreqObject.heartFreq;
         });
 
-      if (labelsWeight[0] !== null && valuesWeight[0] !== null) {
-        setCurrentUserWeightChartData(valuesWeight);
-        setLabels(labelsWeight); //x label
+      if (labelsHeartFreq[0] !== null && valuesHeartFreq[0] !== null) {
+        setCurrentUserHeartFreqChartData(valuesHeartFreq);
+        setLabels(labelsHeartFreq); //x label
         setStartYear(
           new Date(startDate).toString().split(" ")[1] +
             " " +
@@ -209,7 +200,7 @@ function MyLineChart() {
             color: "#0A4C66",
           }}
         >
-          Peso
+          Frecuencia Cardíaca
         </Text>
       </View>
       <View
@@ -305,62 +296,64 @@ function MyLineChart() {
             justifyContent: "space-around",
           }}
         ></View>
-        {currentUserWeightChartData &&
-        labels &&
-        startYear &&
-        endYear &&
-        currentUserWeightChartData.length > 0 &&
-        labels.length > 0 ? (
-          <LineChart
-            data={{
-              labels: labels,
-              datasets: [
-                {
-                  data: currentUserWeightChartData,
+        {currentUserHeartFreqChartData &&
+          labels &&
+          currentUserHeartFreqChartData.length > 0 &&
+          labels.length > 0 && (
+            <LineChart
+              data={{
+                labels: labels,
+                datasets: [
+                  {
+                    data: currentUserHeartFreqChartData,
+                    strokeWidth: 2,
+                    color: (opacity = 1) => `green`,
+                  },
+                ],
+              }}
+              width={Dimensions.get("window").width - 16} // from react-native
+              height={470}
+              verticalLabelRotation={-50} //Degree to rotate
+              xLabelsOffset={12}
+              chartConfig={{
+                backgroundColor: "white",
+                backgroundGradientFrom: "white",
+                backgroundGradientTo: "white",
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 0) => `lightgray`,
+                labelColor: (opacity = 1) => `rgba(0,0,0, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  backgroundColor: "red",
                 },
-              ],
-            }}
-            width={Dimensions.get("window").width - 16} // from react-native
-            height={470}
-            verticalLabelRotation={-50} //Degree to rotate
-            xLabelsOffset={22}
-            chartConfig={{
-              backgroundColor: "white",
-              backgroundGradientFrom: "white",
-              backgroundGradientTo: "white",
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
+                propsForDots: {
+                  r: "2",
+                  strokeWidth: "2",
+                  stroke: "#0A4C66",
+                },
+                propsForBackgroundLines: {
+                  strokeDasharray: "", // solid background lines with no dashes
+                  color: "blue",
+                  backgroundColor: "green",
+                },
+              }}
+              style={{
+                marginVertical: 20,
                 borderRadius: 16,
                 alignContent: "center",
                 justifyContent: "center",
-                alignSelf: "center",
-              },
-              propsForDots: {
-                r: "2",
-                strokeWidth: "2",
-                stroke: "#0A4C66",
-              },
-              propsForBackgroundLines: {
-                strokeDasharray: "", // solid background lines with no dashes
-              },
-            }}
-            style={{
-              marginVertical: 20,
-              borderRadius: 16,
-              alignContent: "center",
-              justifyContent: "center",
-            }}
-          />
-        ) : (
-          <Text>No se han ingresado datos aún</Text>
-        )}
+              }}
+            />
+          )}
       </View>
     </>
   );
 }
 
-export default MyLineChart;
+export default MyLineChart3;
 
 const styles = StyleSheet.create({
   container: {

@@ -18,7 +18,7 @@ export default async function submit(email, password, dispatch) {
     };
 
     const loginRes = await axios.post(
-      "http://192.168.1.29:3001/userapps/login",
+      "http://3.14.73.151/userapps/login",
       loginUser,
       config
     );

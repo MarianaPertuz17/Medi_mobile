@@ -21,8 +21,7 @@ import State from "../Components/State/state";
 import Stats from "../Components/Stats/stats";
 import Line1 from "../Components/Stats/myLineChart";
 import Line2 from "../Components/Stats/myLineChart2";
-import Pie1 from "../Components/Stats/myPieChart";
-import Pie2 from "../Components/Stats/myPieChart2";
+import Line3 from "../Components/Stats/myLineChart3";
 import ChangePassword from "../Components/Profile/changePassword";
 import Chat from "../Components/Chat/index";
 
@@ -236,9 +235,8 @@ function Routes() {
 
         <Scene key="line2" component={Line2} title="Line2" hideNavBar />
 
-        <Scene key="pie1" component={Pie1} title="Pie1" hideNavBar />
+        <Scene key="line3" component={Line3} title="Line3" hideNavBar />
 
-        <Scene key="pie2" component={Pie2} title="Pie2" hideNavBar />
         <Scene
           key="splash"
           component={Splash}

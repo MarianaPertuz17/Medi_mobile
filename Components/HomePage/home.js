@@ -23,10 +23,10 @@ function HomePage() {
   const userToken = useSelector((state) => state.userInfo.token);
   const [userData, setUserData] = useState(null);
 
-  const handleChatSelection = () => {
-    // navigation.navigate(routes.chat);
-    Actions.push("chat");
-  };
+  // const handleChatSelection = () => {
+  //   // navigation.navigate(routes.chat);
+  //   Actions.push("chat");
+  // };
 
   const getUserInfo = async () => {
     try {
@@ -155,7 +155,7 @@ function HomePage() {
       <TouchableOpacity style={styles.button3} onPress={() => Actions.stats()}>
         <Text style={styles.text}>ESTADÍSTICAS</Text>
       </TouchableOpacity>
-
+      {/* 
       <TouchableOpacity onPress={() => handleChatSelection()}>
         <Image
           style={{
@@ -167,7 +167,7 @@ function HomePage() {
           }}
           source={require("./chat.png")}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
